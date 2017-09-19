@@ -1,35 +1,43 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
     <header>
-          <h1>Neighborhood Map</h1>
-          <span data-bind="click:toggleMenu" id="menu">Menu</span>   
-    </header>      
-    <div class="container">    
-      <div class="options-box" data-bind="css:{
+        <h1>Neighborhood Map</h1>
+        <span data-bind="click:toggleMenu" id="menu">Menu</span>
+    </header>
+    <div class="container">
+        <div class="options-box" data-bind="css:{
           'hide':hideMenu
-       }">        
-        <div>
-          <input id="show-listings" data-bind="click:showListings" type="button" value="Show All Listings">
-          <input id="hide-listings" data-bind="click:hideMarkers" type="button" value="Hide Listings">
-          <hr>
-          <input id="filter" type="text" placeholder="Filter the location"  data-bind="textInput: searchKeyword, valueUpdate: 'afterkeydown'">          
+       }">
+            <div>
+                <input id="show-listings" data-bind="click:showListings" type="button" value="Show All Listings">
+                <input id="hide-listings" data-bind="click:hideMarkers" type="button" value="Hide Listings">
+                <hr>
+                <input id="filter" type="text" placeholder="Filter the location" data-bind="textInput: searchKeyword, valueUpdate: 'afterkeydown'">
+            </div>
+            <hr>
+            <div>
+                <ul id="location-list" data-bind="foreach: filteredList">
+                    <li data-bind="text: title, click: $parent.changeLocation"></li>
+                </ul>
+            </div>
+            <div data-bind="content:mapNewsContent">
+
+            </div>
         </div>
-        <hr>
-        <div>
-          <ul id="location-list" data-bind="foreach: filteredList">
-            <li data-bind="text: title, click: $parent.changeLocation"></li>
-          </ul>
-        </div>
-      </div>
-      <div id="map"></div>
+        <div id="map"></div>
     </div>
 
     <script src="js/knockout.js"></script>
+    <script src="js/jquery.min.js"></script>
     <script src="js/app.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyAanmD-vW5OA9yd2tkZRDfbdVZy0b_kmQU&v=3&callback=initMap"></script>
-  </body>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyAanmD-vW5OA9yd2tkZRDfbdVZy0b_kmQU&v=3&callback=initMap" onerror="googleAPIErrorHandling()"></script>
+</body>
+
 </html>
