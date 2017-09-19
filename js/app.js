@@ -156,15 +156,15 @@ var LocationModel = function (data, gMapModel) {
     });
 
     this.showMarker = ko.computed(function () {
-        if (this.visible() === true) {
-            self.marker.setMap(gMapModel.map);
+        if (this.visible() === true) {            
+            self.marker.setVisible(true);
         } else {
-            self.marker.setMap(null);
+            self.marker.setVisible(false);
         }
         return true;
     }, this);
 
-
+    this.marker.setMap(gMapModel.map);
 };
 
 var ViewModel = function () {
