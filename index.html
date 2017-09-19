@@ -4,24 +4,26 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <div class="container">
-      <div class="options-box">
-        <h1>Find Your New NYC Home</h1>
+    <header>
+          <h1>Neighborhood Map</h1>
+          <span data-bind="click:toggleMenu" id="menu">Menu</span>   
+    </header>      
+    <div class="container">    
+      <div class="options-box" data-bind="css:{
+          'hide':hideMenu
+       }">        
         <div>
-          <input id="show-listings" data-bind="click:showListings" type="button" value="Show Listings">
+          <input id="show-listings" data-bind="click:showListings" type="button" value="Show All Listings">
           <input id="hide-listings" data-bind="click:hideMarkers" type="button" value="Hide Listings">
           <hr>
-          <span class="text">Search</span>
-          <input id="search-within-list" type="text" placeholder="Filter the location">
-          <input id="search-" data-bind="click:search" type="button" value="Go">
+          <input id="filter" type="text" placeholder="Filter the location"  data-bind="textInput: searchKeyword, valueUpdate: 'afterkeydown'">          
         </div>
         <hr>
         <div>
-          <ul id="location-list" data-bind="foreach: locationList">
+          <ul id="location-list" data-bind="foreach: filteredList">
             <li data-bind="text: title, click: $parent.changeLocation"></li>
           </ul>
         </div>
-        <hr>
       </div>
       <div id="map"></div>
     </div>

@@ -45,9 +45,10 @@ var initLocations = [
     }
 ];
 var LocationModel = function (data) {
-    this.title = ko.observable(data.title)
-    this.lat = ko.observable(data.location.lat)
-    this.lng = ko.observable(data.location.lng)
+    this.title = ko.observable(data.title);
+    this.lat = ko.observable(data.location.lat);
+    this.lng = ko.observable(data.location.lng);
+    this.visible = ko.observable(true);
 };
 var MapModel = function () {
     var self = this;
@@ -74,12 +75,34 @@ var MapModel = function () {
 
 var ViewModel = function () {
     var self = this;
+    this.hideMenu = ko.observable(false);
+    this.searchKeyword = ko.observable("");
     this.mapModel = new MapModel();
     this.locationList = ko.observableArray([]);
     this.defaultBounds = null;
+    
     initLocations.forEach(function (location) {
         self.locationList.push(new LocationModel(location));
     });
+    
+    this.toggleMenu = function(){
+        this.hideMenu(!this.hideMenu());
+    }
+    
+    this.filteredList = ko.computed( function() {
+		var keyword = self.searchKeyword().toLowerCase();
+		if (keyword.trim() === "") {            
+			return self.locationList();
+		} else {            
+			return ko.utils.arrayFilter(self.locationList(), function(locationItem) {
+				var locationTitle = locationItem.title().toLowerCase();
+				var result = (locationTitle.search(keyword) >= 0);
+				locationItem.visible(result);
+				return result;
+			});
+		}
+	}, self);
+    
     // This function takes in a COLOR, and then creates a new marker
     // icon of that color. The icon will be 21 px wide by 34 high, have an origin
     // of 0, 0 and be anchored at 10, 34).
