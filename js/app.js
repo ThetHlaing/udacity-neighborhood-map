@@ -94,7 +94,7 @@ var ViewModel = function() {
     // icon of that color. The icon will be 21 px wide by 34 high, have an origin
     // of 0, 0 and be anchored at 10, 34).
     this.createMarker = function(Location, index) {
-        // Get the position from the location array.                        
+        // Get the position from the location array.
         var title = Location.title();
         var currentLat = Location.lat();
         var currentLng = Location.lng();
@@ -139,7 +139,7 @@ var ViewModel = function() {
         self.hideMarkers();
         self.generateMarkers();
         var bounds = new google.maps.LatLngBounds();
-        // Extend the boundaries of the map for each marker and display the marker        
+        // Extend the boundaries of the map for each marker and display the marker
         for (var i = 0; i < this.mapModel.markers.length; i++) {
             this.mapModel.markers[i].setMap(self.mapModel.map);
             bounds.extend(this.mapModel.markers[i].position);
@@ -160,7 +160,7 @@ var ViewModel = function() {
         }
     };
     this.generateMarkers = function() {
-        // The following group uses the location array to create an array of markers on initialize.    
+        // The following group uses the location array to create an array of markers on initialize.
         self.mapModel.markers = [];
         for (var i = 0; i < self.locationList().length; i++) {
             var marker = self.createMarker(self.locationList()[i], i);
@@ -211,7 +211,7 @@ var ViewModel = function() {
         } else {
             infowindow.setContent('<div>' + marker.title + '</div>' + '<div>No Street View Found</div>');
         }
-    }
+    };
 
     //show markers by default
     this.showListings();
