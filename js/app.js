@@ -1,6 +1,6 @@
 //var map;
 // These are the real estate listings that will be shown to the user.
-var locations = [
+var initLocations = [
     {
         title: 'Park Ave Penthouse'
         , location: {
@@ -66,19 +66,18 @@ var MapModel = function () {
     };
     
     //Variables
-    this.markers = {};
-    this.infoWindow = {};
+    this.markers = [];
     this.largeInfowindow = new google.maps.InfoWindow();
     this.defaultIcon = self.makeMarkerIcon('0091ff');
     this.highlightedIcon = self.makeMarkerIcon('FFFF24');
-    this.largeInfowindow = new google.maps.InfoWindow();
 };
 
 var ViewModel = function () {
     var self = this;
     this.mapModel = new MapModel();
     this.locationList = ko.observableArray([]);
-    locations.forEach(function (location) {
+    this.defaultBounds = null;
+    initLocations.forEach(function (location) {
         self.locationList.push(new LocationModel(location));
     });
     // This function takes in a COLOR, and then creates a new marker
@@ -114,11 +113,14 @@ var ViewModel = function () {
         });
         return marker;
     };
+    
+    //Varriables
+    this.currentMarker = this.createMarker(new LocationModel(initLocations[0]), 0);
+    
     //Location Lists Functions
-    this.changeLocation = function () {
-        self.currentLocation = this;
+    this.changeLocation = function () {        
         self.hideMarkers();
-        self.currentMarker = self.createMarker(self.currentLocation);
+        self.currentMarker = self.createMarker(this);
         self.currentMarker.setMap(self.mapModel.map);
         var bounds = new google.maps.LatLngBounds();
         bounds.extend(self.currentMarker.position);
@@ -126,6 +128,7 @@ var ViewModel = function () {
     };
     // This function will loop through the markers array and display them all.
     this.showListings = function () {
+        self.hideMarkers();
         self.generateMarkers();
         var bounds = new google.maps.LatLngBounds();
         // Extend the boundaries of the map for each marker and display the marker        
@@ -133,27 +136,33 @@ var ViewModel = function () {
             this.mapModel.markers[i].setMap(self.mapModel.map);
             bounds.extend(this.mapModel.markers[i].position);
         }
+        self.defaultBounds = bounds;
         self.mapModel.map.fitBounds(bounds);
     };
     this.hideMarkers = function () {
+        //Hide markers list
         for (var i = 0; i < this.mapModel.markers.length; i++) {
             this.mapModel.markers[i].setMap(null);
         }
-    };
-    //Varriables
-    this.currentLocation = new LocationModel(locations[0]);
-    this.currentMarker = this.createMarker(this.currentLocation, 0);
-    this.generateMarkers = function () {
-        // The following group uses the location array to create an array of markers on initialize.    
-        this.mapModel.markers = [];
-        for (var i = 0; i < self.locationList().length; i++) {
-            var marker = self.createMarker(self.locationList()[i], i);
-            // Push the marker to our array of markers.
-            this.mapModel.markers.push(marker);
+        //Hide currentMarker
+        self.currentMarker.setMap(null);
+        //Zoom out to default position
+        if(self.defaultBounds !== null){
+            self.mapModel.map.fitBounds(self.defaultBounds);
         }
     };
     
-    //MAP related functions
+    
+    this.generateMarkers = function () {
+        // The following group uses the location array to create an array of markers on initialize.    
+        self.mapModel.markers = [];
+        for (var i = 0; i < self.locationList().length; i++) {
+            var marker = self.createMarker(self.locationList()[i], i);
+            // Push the marker to our array of markers.
+            self.mapModel.markers.push(marker);
+        }
+    };
+    
     // This function populates the infowindow when the marker is clicked. We'll only allow
     // one infowindow which will open at the marker that is clicked, and populate based
     // on that markers position.
@@ -198,6 +207,9 @@ var ViewModel = function () {
             infowindow.open(map, marker);
         }
     };
+    
+    //show markers by default
+    this.showListings();
 };
 
 
